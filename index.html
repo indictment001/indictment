@@ -116,7 +116,8 @@
             transition: top 0.2s, font-size 0.2s, color 0.2s;
         }
         input[type="email"],
-        input[type="password"] {
+        input[type="password"],
+        input[type="text"] {
             width: 100%;
             padding: 28px 20px 6px 20px;
             border: none;
@@ -129,7 +130,8 @@
             box-sizing: border-box;
         }
         input[type="email"]:focus,
-        input[type="password"]:focus {
+        input[type="password"]:focus,
+        input[type="text"]:focus {
             border-bottom: 2px solid #1565a0;
         }
         input:focus + label,
@@ -141,13 +143,28 @@
         .password-group {
             position: relative;
         }
+        /* Ensure the toggle sits outside the input field so text doesn't
+           get covered when showing the password. Add right padding on
+           inputs in this group to accommodate the control. */
+        .password-group input[type="password"],
+        .password-group input[type="text"] {
+            padding-right: 44px;
+        }
         .toggle-password {
             position: absolute;
-            right: 8px;
-            top: 70%;
+            right: 12px;
+            top: 50%;
             transform: translateY(-50%);
             cursor: pointer;
             color: #1976b2;
+            z-index: 3;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            background: transparent;
+            border-radius: 16px;
         }
         .btn {
             width: 100%;
@@ -305,6 +322,20 @@
             } else {
                 pwd.type = 'password';
             }
+            // keep focus and cursor position after type toggle
+            try {
+                // Try to capture both selectionStart and selectionEnd so caret/selection
+                // isn't moved to the start when toggling. If browser doesn't support
+                // these properties, fall back to moving caret to the end.
+                var start = typeof pwd.selectionStart === 'number' ? pwd.selectionStart : pwd.value.length;
+                var end = typeof pwd.selectionEnd === 'number' ? pwd.selectionEnd : start;
+                pwd.focus();
+                // Allow a micro task for some browsers to re-evaluate type change
+                // before setting selection (improves reliability).
+                setTimeout(function() {
+                    try { pwd.setSelectionRange(start, end); } catch (inner) { /* ignore */ }
+                }, 0);
+            } catch (e) { /* ignore if not supported */ }
         }
         // Initial spinner and error logic
         window.addEventListener('DOMContentLoaded', function() {
