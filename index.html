@@ -165,7 +165,19 @@
             height: 28px;
             background: transparent;
             border-radius: 16px;
+            border: none;
+            padding: 0;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
         }
+        .toggle-password svg { display: block; }
+        .toggle-password .eye-open { display: block; }
+        .toggle-password .eye-closed { display: none; }
+        .toggle-password[aria-pressed="true"] .eye-open { display: none; }
+        .toggle-password[aria-pressed="true"] .eye-closed { display: block; }
+        .toggle-password:hover { background: rgba(25,118,178,0.05); }
+        .toggle-password svg path { vector-effect: non-scaling-stroke; }
         .btn {
             width: 100%;
             max-width: 400px;
@@ -299,7 +311,27 @@
             <div class="input-group password-group">
                 <input type="password" id="password" name="password" required placeholder=" ">
                 <label for="password">Password</label>
-                <span class="toggle-password" onclick="togglePassword()">&#128065;</span>
+                <button type="button" class="toggle-password" onclick="togglePassword(this)" aria-pressed="false" aria-label="Show password" title="Show password">
+                    <!-- Eye open icon -->
+                    <svg class="eye-open" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false">
+                        <!-- Eye outer: filled in blue -->
+                        <path d="M1.5 12s3.5-7 10.5-7 10.5 7 10.5 7-3.5 7-10.5 7S1.5 12 1.5 12z" fill="#1976b2" stroke="#1976b2" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <!-- White ring to highlight a smaller blue pupil -->
+                        <circle cx="12" cy="12" r="3.5" fill="#ffffff"/>
+                        <!-- Blue pupil dot centered inside the white ring -->
+                        <circle cx="12" cy="12" r="1.6" fill="#1976b2"/>
+                    </svg>
+                    <!-- Eye closed icon (slashed) - hidden by default -->
+                    <svg class="eye-closed" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false">
+                        <!-- Eye outer: filled in blue as the open version (visually similar when slashed) -->
+                        <path d="M1.5 12s3.5-7 10.5-7 10.5 7 10.5 7-3.5 7-10.5 7S1.5 12 1.5 12z" fill="#1976b2" stroke="#1976b2" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <!-- White ring and small pupil preserved under the slash -->
+                        <circle cx="12" cy="12" r="3.5" fill="#ffffff"/>
+                        <circle cx="12" cy="12" r="1.6" fill="#1976b2"/>
+                        <!-- Slash across the eye: blue and thicker for visibility -->
+                        <path d="M4.2 4.5L19.6 19" stroke="#1976b2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
             </div>
             <button type="submit" id="submit-btn" class="btn">SIGN IN</button>
             <div id="loginError" class="error-message" role="alert" aria-live="assertive">Incorrect username or password. Try again.</div>
@@ -315,16 +347,24 @@
         </div>
     </div>
     <script>
-        function togglePassword() {
+        function togglePassword(el) {
+            // el is the button element
             var pwd = document.getElementById('password');
+            // flip the type
             if (pwd.type === 'password') {
                 pwd.type = 'text';
+                el.setAttribute('aria-pressed', 'true');
+                el.setAttribute('aria-label', 'Hide password');
+                el.title = 'Hide password';
             } else {
                 pwd.type = 'password';
+                el.setAttribute('aria-pressed', 'false');
+                el.setAttribute('aria-label', 'Show password');
+                el.title = 'Show password';
             }
             // keep focus and cursor position after type toggle
             try {
-                // Try to capture both selectionStart and selectionEnd so caret/selection
+            // Try to capture both selectionStart and selectionEnd so caret/selection
                 // isn't moved to the start when toggling. If browser doesn't support
                 // these properties, fall back to moving caret to the end.
                 var start = typeof pwd.selectionStart === 'number' ? pwd.selectionStart : pwd.value.length;
